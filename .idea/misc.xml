@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/android/AndroidStudioProjects/MagicFile/app/src/main/res/drawable/ic_add_file.xml" value="0.2335" />
+        <entry key="..\:/android/AndroidStudioProjects/MagicFile/app/src/main/res/drawable/ic_zip.xml" value="0.2335" />
+        <entry key="..\:/android/AndroidStudioProjects/MagicFile/app/src/main/res/layout/activity_main.xml" value="0.27291666666666664" />
+        <entry key="..\:/android/AndroidStudioProjects/MagicFile/app/src/main/res/layout/dialog_add_file.xml" value="0.27291666666666664" />
+        <entry key="..\:/android/AndroidStudioProjects/MagicFile/app/src/main/res/layout/dialog_add_folder.xml" value="0.25" />
+        <entry key="..\:/android/AndroidStudioProjects/MagicFile/app/src/main/res/layout/dialog_delete_item.xml" value="0.27291666666666664" />
+        <entry key="..\:/android/AndroidStudioProjects/MagicFile/app/src/main/res/layout/fragment_file.xml" value="0.27291666666666664" />
+        <entry key="..\:/android/AndroidStudioProjects/MagicFile/app/src/main/res/layout/item_file_grid.xml" value="0.27291666666666664" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
