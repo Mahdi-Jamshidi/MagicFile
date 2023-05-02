@@ -13,33 +13,35 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import ir.magiccodes.magicfile.databinding.DialogAddFileBinding
 import ir.magiccodes.magicfile.databinding.DialogAddFolderBinding
 import ir.magiccodes.magicfile.databinding.DialogDeleteItemBinding
 import ir.magiccodes.magicfile.databinding.FragmentFileBinding
+
 import java.io.File
 
 class FileFragment(val path: String) : Fragment(), FileAdapter.FileEvent {
     lateinit var binding: FragmentFileBinding
-    lateinit var adaper: FileAdapter
+    lateinit var adapter: FileAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+
         binding = FragmentFileBinding.inflate(layoutInflater)
         return binding.root
+
     }
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (MainActivity.ourViewType == 0){
+        if (MainActivity.ourViewType == 0) {
             binding.btnShowType.setImageResource(R.drawable.ic_grid)
-        }else{
+        } else {
             binding.btnShowType.setImageResource(R.drawable.ic_list)
         }
 
@@ -47,21 +49,32 @@ class FileFragment(val path: String) : Fragment(), FileAdapter.FileEvent {
         binding.txtPath.text = ourFile.name + ">"
 
         if (ourFile.isDirectory) {
+
             val listOfFiles = arrayListOf<File>()
             listOfFiles.addAll(ourFile.listFiles()!!)
             listOfFiles.sort()
 
-            adaper = FileAdapter(listOfFiles, this)
-            binding.recyclerMain.adapter = adaper
-            binding.recyclerMain.layoutManager = GridLayoutManager(context, MainActivity.ourSpanCount, LinearLayoutManager.VERTICAL, false)
-            adaper.changeViewType(MainActivity.ourViewType)
+            adapter = FileAdapter(listOfFiles, this)
+            binding.recyclerMain.adapter = adapter
+            binding.recyclerMain.layoutManager = GridLayoutManager(
+                context,
+                MainActivity.ourSpanCount,
+                LinearLayoutManager.VERTICAL,
+                false
+            )
+            adapter.changeViewType(MainActivity.ourViewType)
+
             if (listOfFiles.size > 0) {
+
                 binding.recyclerMain.visibility = View.VISIBLE
                 binding.imgNoData.visibility = View.GONE
 
+
             } else {
+
                 binding.recyclerMain.visibility = View.GONE
                 binding.imgNoData.visibility = View.VISIBLE
+
             }
 
         }
@@ -69,67 +82,46 @@ class FileFragment(val path: String) : Fragment(), FileAdapter.FileEvent {
         binding.btnAddFolder.setOnClickListener {
             createNewFolder()
         }
-
         binding.btnAddFile.setOnClickListener {
             createNewFile()
         }
-
         binding.btnShowType.setOnClickListener {
 
-            if (MainActivity.ourViewType == 0){
+            if (MainActivity.ourViewType == 0) {
+
                 MainActivity.ourViewType = 1
                 MainActivity.ourSpanCount = 3
 
-                adaper.changeViewType(MainActivity.ourViewType)
-                binding.recyclerMain.layoutManager = GridLayoutManager(context,MainActivity.ourSpanCount)
+                adapter.changeViewType(MainActivity.ourViewType)
+                binding.recyclerMain.layoutManager =
+                    GridLayoutManager(context, MainActivity.ourSpanCount)
 
                 binding.btnShowType.setImageResource(R.drawable.ic_list)
 
-            }else if (MainActivity.ourViewType == 1){
+            } else if (MainActivity.ourViewType == 1) {
+
                 MainActivity.ourViewType = 0
                 MainActivity.ourSpanCount = 1
 
-                adaper.changeViewType(MainActivity.ourViewType)
-                binding.recyclerMain.layoutManager = GridLayoutManager(context,MainActivity.ourSpanCount)
+                adapter.changeViewType(MainActivity.ourViewType)
+                binding.recyclerMain.layoutManager =
+                    GridLayoutManager(context, MainActivity.ourSpanCount)
 
                 binding.btnShowType.setImageResource(R.drawable.ic_grid)
+
             }
-        }
-    }
 
-    private fun createNewFolder() {
-
-        val dialog = AlertDialog.Builder(context).create()
-        val addFolderBinding = DialogAddFolderBinding.inflate(layoutInflater)
-
-        dialog.setView(addFolderBinding.root)
-        dialog.show()
-
-        addFolderBinding.btnCancel.setOnClickListener {
-            dialog.dismiss()
         }
 
-        addFolderBinding.btnCreate.setOnClickListener {
-            val newFolderName = addFolderBinding.edtAddFolder.text.toString()
-
-            val newFile = File(path + File.separator + newFolderName)
-            if (!newFile.exists()) {
-                if (newFile.mkdir()) {
-                    adaper.addNewFile(newFile)
-                    binding.recyclerMain.scrollToPosition(0)
-                    binding.recyclerMain.visibility = View.VISIBLE
-                    binding.imgNoData.visibility = View.GONE
-                }
-            }
-            dialog.dismiss()
-        }
     }
 
     private fun createNewFile() {
 
         val dialog = AlertDialog.Builder(context).create()
+
         val addFileBinding = DialogAddFileBinding.inflate(layoutInflater)
         dialog.setView(addFileBinding.root)
+
         dialog.show()
 
         addFileBinding.btnCancel.setOnClickListener {
@@ -137,23 +129,67 @@ class FileFragment(val path: String) : Fragment(), FileAdapter.FileEvent {
         }
 
         addFileBinding.btnCreate.setOnClickListener {
-            val newFileName = addFileBinding.edtAddFolder.text.toString()
 
-            val newFile = File(path + File.separator + newFileName)
+            val nameOfNewFolder = addFileBinding.edtAddFolder.text.toString()
+
+            val newFile = File(path + File.separator + nameOfNewFolder)
+
             if (!newFile.exists()) {
                 if (newFile.createNewFile()) {
-                    adaper.addNewFile(newFile)
+                    adapter.addNewFile(newFile)
                     binding.recyclerMain.scrollToPosition(0)
+
                     binding.recyclerMain.visibility = View.VISIBLE
                     binding.imgNoData.visibility = View.GONE
                 }
             }
+
+            dialog.dismiss()
+
+        }
+
+
+    }
+
+    private fun createNewFolder() {
+
+        val dialog = AlertDialog.Builder(context).create()
+
+        val addFolderBinding = DialogAddFolderBinding.inflate(layoutInflater)
+        dialog.setView(addFolderBinding.root)
+
+        dialog.show()
+
+        addFolderBinding.btnCancel.setOnClickListener {
             dialog.dismiss()
         }
+
+        addFolderBinding.btnCreate.setOnClickListener {
+
+            val nameOfNewFolder = addFolderBinding.edtAddFolder.text.toString()
+
+            val newFile = File(path + File.separator + nameOfNewFolder)
+            if (!newFile.exists()) {
+                if (newFile.mkdir()) {
+                    adapter.addNewFile(newFile)
+                    binding.recyclerMain.scrollToPosition(0)
+
+                    binding.recyclerMain.visibility = View.VISIBLE
+                    binding.imgNoData.visibility = View.GONE
+                }
+            }
+
+            dialog.dismiss()
+
+        }
+
+
     }
 
     override fun onFileClicked(file: File, type: String) {
+
         val intent = Intent(Intent.ACTION_VIEW)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
             val fileProvider = FileProvider.getUriForFile(
@@ -164,38 +200,49 @@ class FileFragment(val path: String) : Fragment(), FileAdapter.FileEvent {
             intent.setDataAndType(fileProvider, type)
 
         } else {
+
             intent.setDataAndType(Uri.fromFile(file), type)
+
         }
 
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         startActivity(intent)
+
     }
+
     override fun onFolderClicked(path: String) {
 
         val transaction = parentFragmentManager.beginTransaction()
         transaction.replace(R.id.frame_main_container, FileFragment(path))
         transaction.addToBackStack(null)
         transaction.commit()
+
     }
+
     override fun onLongClicked(file: File, position: Int) {
 
-        val deleteItemBinding = DialogDeleteItemBinding.inflate(layoutInflater)
+        val dialogDeleteBinding = DialogDeleteItemBinding.inflate(layoutInflater)
+
         val dialog = AlertDialog.Builder(context).create()
-        dialog.setView(deleteItemBinding.root)
+        dialog.setView(dialogDeleteBinding.root)
         dialog.show()
 
-        deleteItemBinding.btnCancel.setOnClickListener {
+        dialogDeleteBinding.btnCancel.setOnClickListener {
             dialog.dismiss()
         }
 
-        deleteItemBinding.btnDelete.setOnClickListener {
+        dialogDeleteBinding.btnDelete.setOnClickListener {
 
-            if (file.exists()){
-                if (file.deleteRecursively()){
-                    adaper.removeFile(file, position)
+            if (file.exists()) {
+                if (file.deleteRecursively()) {
+                    adapter.removeFile(file, position)
                 }
             }
+
             dialog.dismiss()
         }
+
     }
+
+
 }
